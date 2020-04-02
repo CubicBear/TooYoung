@@ -97,7 +97,8 @@
 \def\FYoung#1{\begin{array}{c}\!\!{\fyoung{#1}}\!\!\end{array}}
 
 %Type, firstly define repeat
-\def\repeatet#1{\newcount\n
+\newcount\n
+\def\repeatet#1{%
 \n=0%
 \loop\ifnum\n<#1 %
 \Youngbox{}\advance\n by 1%
@@ -115,6 +116,9 @@
 
 \def\yng(#1){\begin{array}{c}{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
 \def\Yng(#1){\begin{array}{c}\youngtype(#1)\end{array}}
+
+\def\fyng(#1){\begin{array}{c}\Frenchstyletrue{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
+\def\FYng(#1){\begin{array}{c}\Frenchstyletrue\youngtype(#1)\end{array}}
 
 
 
