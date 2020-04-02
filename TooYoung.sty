@@ -1,0 +1,146 @@
+%General setting
+\newdimen\Youngwidth%-----------------------------------------------------The width of each rectangle.
+\setlength\Youngwidth{1pc}
+\newdimen\Youngheight%------------------------------------------------------The height of each rectangle.
+\setlength\Youngheight{\Youngwidth}
+\newdimen\Youngvline%----------------------------------------------------The thickness of lines.
+\setlength\Youngvline{0.2pt}
+%\setlength\Youngvline{1pt}%TEST
+\newdimen\Younghline%----------------------------------------------------The thickness of lines.
+\setlength\Younghline{\Youngvline}
+\def\Fontinbox#1{#1}%----------------------------------------------------the font in the box
+\newif\ifFrenchstyle\Frenchstylefalse%-----------------------------------Whether french style
+\newdimen\x\newdimen\y\newdimen\z\newdimen\w%
+
+%The basic Young box
+\def\Youngbox#1{\rule{0pc}{\Youngheight}%
+\setlength{\x}{\Youngheight}\addtolength{\x}{\Younghline}%
+\setlength{\y}{\Youngwidth}\addtolength{\y}{\Youngvline}%%
+\setlength{\z}{\Youngheight}\addtolength{\z}{-0.5\Younghline}%
+\makebox[\Youngwidth][c]{%-----------------------------------------------------------------------This is set to make no problem of position
+  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\x}}%------------------This is the left line
+  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[\z]{\y}{\Younghline}}%-------------------------------The upper side
+  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[-0.5\Younghline]{\y}{\Younghline}}%-----------------------------The lower side
+  \makebox[\Youngwidth][c]{#1}%----------------------------------------------------------This is to be filled
+  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\x}}%------------------------This is the right line
+}}
+
+%MultifunctionalYoungbox
+\def\Ybox#1{%
+  \def\xword{#1}%
+  \expandafter\YboxAux#1 [\middleYbox]\endYbox%
+}%
+\def\YboxAux#1[#2]#3\endYbox{\def\yword{#1}\def\nothing{}\def\aspace{ }%
+\ifx\middleYbox#2%
+  \expandafter\Yboxwords\xword\endofYbox%
+\else\ifx\nothing\yword%
+  \expandafter\Yboxeffect\xword\endofYbox%
+\else\ifx\aspace\yword%
+  \expandafter\Yboxeffect\xword\endofYbox%
+\else%
+  \expandafter\Yboxwords\xword\endofYbox%
+\fi\fi\fi%
+}
+\def\Yboxwords#1\endofYbox{\Youngbox{\raisebox{0.25\Youngheight}{$\Fontinbox{#1}$}}}
+\def\Yboxeffect#1[#2]#3\endofYbox{%
+  \makebox[0pc][l]{\makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}\raisebox{0.25\Youngheight}{$\Fontinbox{#2}$}}}%%
+\makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}#3}%
+}
+
+%combine two rows
+\def\addnewrowto#1#2{%
+\ifFrenchstyle\mbox{%---------------------------------------------This is set to make no problem of position
+  \settoheight{\x}{#1}\addtolength{\x}{-0.5\Younghline}\raisebox{\x}{#2}%
+  \settowidth{\x}{#2}\hspace{-\x}\makebox[0pc][l]{#1}%
+  \settowidth{\y}{#1}\ifnum\y<\x\makebox[\x]{}\else\makebox[\y]{}\fi%
+}%
+\else\mbox{%---------------------------------------------This is set to make no problem of position
+  \settoheight{\x}{#2}\addtolength{\x}{-0.5\Younghline}\raisebox{\x}{#1}%
+  \settowidth{\x}{#1}\hspace{-\x}\makebox[0pc][l]{#2}%
+  \settowidth{\y}{#2}\ifnum\y<\x\makebox[\x]{}\else\makebox[\y]{}\fi%
+}%
+\fi}
+
+\def\makeYoungrow#1{%
+\futurelet\next\makeYoungrowAux&#1&\stopmakeYoungrow&\endmakeYoungrow}%------We add the recognization commond at the end.
+\def\makeYoungrowAux#1&#2&#3\endmakeYoungrow{%-------------------------------------#1 The term read, #2 The reading term, #3the term to read
+  \ifx\stopmakeYoungrow#2%--------------------------------------------------------------------If nothing is reading
+    {#1}%---------------------------------------------------------------------------------------print the done one
+  \else%
+    \expandafter\makeYoungrowAux{#1\Ybox{#2}}&#3\endmakeYoungrow%----------------------------iterate
+  \fi%
+}
+
+
+\def\makeYoungcolumn#1{\futurelet\next\makeYoungcolumnAux\\#1\\\stopmakeYoungcolumn\\\endmakeYoungcolumn}%
+\def\makeYoungcolumnAux#1\\#2\\#3\endmakeYoungcolumn{%
+  \ifx\stopmakeYoungcolumn#2%
+    {#1}%
+  \else%
+    \expandafter\makeYoungcolumnAux {\addnewrowto{#1}{\makeYoungrow{#2}}}\\#3\endmakeYoungcolumn%
+  \fi%
+}
+
+\def\young#1{\def\hole{{}\raisebox{-0.25\Youngheight}{\rule{\Youngwidth}{\Youngheight}}}%
+\def\shadow{{}\raisebox{-0.25\Youngheight}{%
+  \makebox[\Youngwidth][l]{%
+  \makebox[0pc][l]{\rule[0.2\Youngheight]{\Youngwidth}{\Younghline}}\makebox[0pc][l]{\rule[0.4\Youngheight]{\Youngwidth}{\Younghline}}%
+  \makebox[0pc][l]{\rule[0.6\Youngheight]{\Youngwidth}{\Younghline}}\makebox[0pc][l]{\rule[0.8\Youngheight]{\Youngwidth}{\Younghline}}%
+  \mbox{}\hfill\rule{\Youngvline}{\Youngheight}\hfill\rule{\Youngvline}{\Youngheight}%
+  \hfill\rule{\Youngvline}{\Youngheight}\hfill\rule{\Youngvline}{\Youngheight}\hfill}%%
+}}%
+\makeYoungcolumn{#1}%
+}
+\def\fyoung#1{{\Frenchstyletrue\young{#1}}}
+
+\def\Young#1{\begin{array}{c}\!\!{\young{#1}}\!\!\end{array}}
+\def\FYoung#1{\begin{array}{c}\!\!{\fyoung{#1}}\!\!\end{array}}
+
+%Type, firstly define repeat
+\def\repeatet#1{\newcount\n
+\n=0%
+\loop\ifnum\n<#1 %
+\Youngbox{}\advance\n by 1%
+\repeat%
+}
+
+\def\youngtype(#1){\futurelet\next\makeyoungtype,#1,\stopmakeyoungtype,\endmakeyoungtype}%
+\def\makeyoungtype#1,#2,#3\endmakeyoungtype{\def\nothing{}%
+  \ifx\stopmakeyoungtype#2%
+    {#1}%
+  \else
+    \expandafter\makeyoungtype {\addnewrowto{#1}{\repeatet{#2}}},#3\endmakeyoungtype%
+  \fi
+}%
+
+\def\yng(#1){\begin{array}{c}{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
+\def\Yng(#1){\begin{array}{c}\youngtype(#1)\end{array}}
+
+
+
+%hooks
+\newdimen{\Youngvhook}
+\setlength{\Youngvhook}{8\Youngvline}
+\newdimen{\Younghhook}
+\setlength{\Younghhook}{8\Youngvline}
+
+\def\hook[#1]{{}\raisebox{-0.25\Youngheight}{\setlength{\w}{0.5\Youngheight}\addtolength{\w}{-0.5\Younghhook}%%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\w]{\Youngvhook}{\Younghhook}}}%
+  \expandafter\mhook#1\endofmakeinghook}}%
+\def\mhook#1{\ifx#1\endofmakeinghook\relax\else\makehook{#1}\expandafter\mhook\fi}%
+\def\makehook#1{%
+\setlength{\w}{0.5\Youngheight}\addtolength{\w}{-0.5\Younghhook}%
+  \def\lefthook{l}\def\righthook{r}\def\uphook{u}\def\downhook{d}\def\centerhook{c}%
+\if\centerhook#1%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\w]{\Youngvhook}{\Younghhook}}}%
+\else\if\lefthook#1%
+  \makebox[0pc][c]{\makebox[\Youngwidth][l]{\rule[\w]{0.5\Youngwidth}{\Younghhook}}}%%
+\else\if\righthook#1%
+  \makebox[0pc][c]{\makebox[\Youngwidth][r]{\rule[\w]{0.5\Youngwidth}{\Younghhook}}}%%%
+\else\if\uphook#1%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[0.5\Youngheight]{\Youngvhook}{0.5\Youngheight}}}%%%
+\else\if\downhook#1%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule{\Youngvhook}{0.5\Youngheight}}}%%%
+\else\relax%
+\fi\fi\fi\fi\fi%
+}%
