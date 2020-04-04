@@ -1,3 +1,21 @@
+ %% pig.dtx
+  %% Copyright 2020 Xiong Rui
+  %
+  % This work may be distributed and/or modified under the
+  % conditions of the LaTeX Project Public License, either version 1.3
+  % of this license or (at your option) any later version.
+  % The latest version of this license is in
+  %   http://www.latex-project.org/lppl.txt
+  % and version 1.3 or later is part of all distributions of LaTeX
+  % version 2005/12/01 or later.
+  %
+  % This work has the LPPL maintenance status “maintained”.
+  %
+  % The Current Maintainer of this work is M. Y. Name.
+  %
+  % This work consists of the files pig.dtx and pig.ins
+  % and the derived file pig.sty.
+%
 %General setting
 \newdimen\Youngwidth%-----------------------------------------------------The width of each rectangle.
 \setlength\Youngwidth{1pc}
@@ -5,13 +23,12 @@
 \setlength\Youngheight{\Youngwidth}
 \newdimen\Youngvline%----------------------------------------------------The thickness of lines.
 \setlength\Youngvline{0.2pt}
-%\setlength\Youngvline{1pt}%TEST
 \newdimen\Younghline%----------------------------------------------------The thickness of lines.
 \setlength\Younghline{\Youngvline}
 \def\Fontinbox#1{#1}%----------------------------------------------------the font in the box
 \newif\ifFrenchstyle\Frenchstylefalse%-----------------------------------Whether french style
 \newdimen\x\newdimen\y\newdimen\z\newdimen\w%
-
+%
 %The basic Young box
 \def\Youngbox#1{\rule{0pc}{\Youngheight}%
 \setlength{\x}{\Youngheight}\addtolength{\x}{\Younghline}%
@@ -24,7 +41,7 @@
   \makebox[\Youngwidth][c]{#1}%----------------------------------------------------------This is to be filled
   \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\x}}%------------------------This is the right line
 }}
-
+%
 %MultifunctionalYoungbox
 \def\Ybox#1{%
   \def\xword{#1}%
@@ -46,7 +63,7 @@
   \makebox[0pc][l]{\makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}\raisebox{0.25\Youngheight}{$\Fontinbox{#2}$}}}%%
 \makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}#3}%
 }
-
+%
 %combine two rows
 \def\addnewrowto#1#2{%
 \ifFrenchstyle\mbox{%---------------------------------------------This is set to make no problem of position
@@ -60,7 +77,7 @@
   \settowidth{\y}{#2}\ifnum\y<\x\makebox[\x]{}\else\makebox[\y]{}\fi%
 }%
 \fi}
-
+%
 \def\makeYoungrow#1{%
 \futurelet\next\makeYoungrowAux&#1&\stopmakeYoungrow&\endmakeYoungrow}%------We add the recognization commond at the end.
 \def\makeYoungrowAux#1&#2&#3\endmakeYoungrow{%-------------------------------------#1 The term read, #2 The reading term, #3the term to read
@@ -70,8 +87,8 @@
     \expandafter\makeYoungrowAux{#1\Ybox{#2}}&#3\endmakeYoungrow%----------------------------iterate
   \fi%
 }
-
-
+%
+%
 \def\makeYoungcolumn#1{\futurelet\next\makeYoungcolumnAux\\#1\\\stopmakeYoungcolumn\\\endmakeYoungcolumn}%
 \def\makeYoungcolumnAux#1\\#2\\#3\endmakeYoungcolumn{%
   \ifx\stopmakeYoungcolumn#2%
@@ -80,7 +97,7 @@
     \expandafter\makeYoungcolumnAux {\addnewrowto{#1}{\makeYoungrow{#2}}}\\#3\endmakeYoungcolumn%
   \fi%
 }
-
+%
 \def\young#1{\def\hole{{}\raisebox{-0.25\Youngheight}{\rule{\Youngwidth}{\Youngheight}}}%
 \def\shadow{{}\raisebox{-0.25\Youngheight}{%
   \makebox[\Youngwidth][l]{%
@@ -92,19 +109,17 @@
 \makeYoungcolumn{#1}%
 }
 \def\fyoung#1{{\Frenchstyletrue\young{#1}}}
-
 \def\Young#1{\begin{array}{c}\!\!{\young{#1}}\!\!\end{array}}
 \def\FYoung#1{\begin{array}{c}\!\!{\fyoung{#1}}\!\!\end{array}}
-
+%
 %Type, firstly define repeat
 \newcount\n
 \def\repeatet#1{%
-\n=0%
-\loop\ifnum\n<#1 %
-\Youngbox{}\advance\n by 1%
-\repeat%
+  \n=0%
+  \loop\ifnum\n<#1 %
+  \Youngbox{}\advance\n by 1%
+  \repeat%
 }
-
 \def\youngtype(#1){\futurelet\next\makeyoungtype,#1,\stopmakeyoungtype,\endmakeyoungtype}%
 \def\makeyoungtype#1,#2,#3\endmakeyoungtype{\def\nothing{}%
   \ifx\stopmakeyoungtype#2%
@@ -113,21 +128,19 @@
     \expandafter\makeyoungtype {\addnewrowto{#1}{\repeatet{#2}}},#3\endmakeyoungtype%
   \fi
 }%
-
 \def\yng(#1){\begin{array}{c}{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
 \def\Yng(#1){\begin{array}{c}\youngtype(#1)\end{array}}
-
 \def\fyng(#1){\begin{array}{c}\Frenchstyletrue{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
 \def\FYng(#1){\begin{array}{c}\Frenchstyletrue\youngtype(#1)\end{array}}
-
-
-
+%
+%
+%
 %hooks
 \newdimen{\Youngvhook}
 \setlength{\Youngvhook}{8\Youngvline}
 \newdimen{\Younghhook}
 \setlength{\Younghhook}{8\Youngvline}
-
+%
 \def\hook[#1]{{}\raisebox{-0.25\Youngheight}{\setlength{\w}{0.5\Youngheight}\addtolength{\w}{-0.5\Younghhook}%%
   \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\w]{\Youngvhook}{\Younghhook}}}%
   \expandafter\mhook#1\endofmakeinghook}}%
@@ -148,3 +161,8 @@
 \else\relax%
 \fi\fi\fi\fi\fi%
 }%
+%
+%
+%
+%
+%
