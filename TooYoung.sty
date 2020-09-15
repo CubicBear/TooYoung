@@ -26,35 +26,35 @@
 \setlength\Younghline{\Youngvline}
 \def\Fontinbox#1{#1}%----------------------------------------------------the font in the box
 \newif\ifFrenchstyle\Frenchstylefalse%-----------------------------------Whether french style
-\newdimen\x\newdimen\y\newdimen\z\newdimen\w%
+\newdimen\Youngx\newdimen\Youngy\newdimen\Youngz\newdimen\Youngw%
 %
 %The basic Young box
 \def\Youngbox#1{\rule{0pc}{\Youngheight}%
-\setlength{\x}{\Youngheight}\addtolength{\x}{\Younghline}%
-\setlength{\y}{\Youngwidth}\addtolength{\y}{\Youngvline}%%
-\setlength{\z}{\Youngheight}\addtolength{\z}{-0.5\Younghline}%
+\setlength{\Youngx}{\Youngheight}\addtolength{\Youngx}{\Younghline}%
+\setlength{\Youngy}{\Youngwidth}\addtolength{\Youngy}{\Youngvline}%%
+\setlength{\Youngz}{\Youngheight}\addtolength{\Youngz}{-0.5\Younghline}%
 \makebox[\Youngwidth][c]{%-----------------------------------------------------------------------This is set to make no problem of position
-  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\x}}%------------------This is the left line
-  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[\z]{\y}{\Younghline}}%-------------------------------The upper side
-  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[-0.5\Younghline]{\y}{\Younghline}}%-----------------------------The lower side
+  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\Youngx}}%------------------This is the left line
+  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[\Youngz]{\Youngy}{\Younghline}}%-------------------------------The upper side
+  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[-0.5\Younghline]{\Youngy}{\Younghline}}%-----------------------------The lower side
   \makebox[\Youngwidth][c]{#1}%----------------------------------------------------------This is to be filled
-  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\x}}%------------------------This is the right line
+  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\Youngx}}%------------------------This is the right line
 }}
 %
 %MultifunctionalYoungbox
 \def\Ybox#1{%
-  \def\xword{#1}%
-  \expandafter\YboxAux#1 [\middleYbox]\endYbox%
+  \def\Youngxword{#1}%
+  \expandafter\YboxAux#1[\middleYbox]\endYbox%
 }%
 \def\YboxAux#1[#2]#3\endYbox{\def\yword{#1}\def\nothing{}\def\aspace{ }%
 \ifx\middleYbox#2%
-  \expandafter\Yboxwords\xword\endofYbox%
+  \expandafter\Yboxwords\Youngxword\endofYbox%
 \else\ifx\nothing\yword%
-  \expandafter\Yboxeffect\xword\endofYbox%
+  \expandafter\Yboxeffect\Youngxword\endofYbox%
 \else\ifx\aspace\yword%
-  \expandafter\Yboxeffect\xword\endofYbox%
+  \expandafter\Yboxeffect\Youngxword\endofYbox%
 \else%
-  \expandafter\Yboxwords\xword\endofYbox%
+  \expandafter\Yboxwords\Youngxword\endofYbox%
 \fi\fi\fi%
 }
 \def\Yboxwords#1\endofYbox{\Youngbox{\raisebox{0.25\Youngheight}{$\Fontinbox{#1}$}}}
@@ -66,14 +66,14 @@
 %combine two rows
 \def\addnewrowto#1#2{%
 \ifFrenchstyle\mbox{%---------------------------------------------This is set to make no problem of position
-  \settoheight{\x}{#1}\addtolength{\x}{-0.5\Younghline}\raisebox{\x}{#2}%
-  \settowidth{\x}{#2}\hspace{-\x}\makebox[0pc][l]{#1}%
-  \settowidth{\y}{#1}\ifnum\y<\x\makebox[\x]{}\else\makebox[\y]{}\fi%
+  \settoheight{\Youngx}{#1}\addtolength{\Youngx}{-0.5\Younghline}\raisebox{\Youngx}{#2}%
+  \settowidth{\Youngx}{#2}\hspace{-\Youngx}\makebox[0pc][l]{#1}%
+  \settowidth{\Youngy}{#1}\ifnum\Youngy<\Youngx\makebox[\Youngx]{}\else\makebox[\Youngy]{}\fi%
 }%
 \else\mbox{%---------------------------------------------This is set to make no problem of position
-  \settoheight{\x}{#2}\addtolength{\x}{-0.5\Younghline}\raisebox{\x}{#1}%
-  \settowidth{\x}{#1}\hspace{-\x}\makebox[0pc][l]{#2}%
-  \settowidth{\y}{#2}\ifnum\y<\x\makebox[\x]{}\else\makebox[\y]{}\fi%
+  \settoheight{\Youngx}{#2}\addtolength{\Youngx}{-0.5\Younghline}\raisebox{\Youngx}{#1}%
+  \settowidth{\Youngx}{#1}\hspace{-\Youngx}\makebox[0pc][l]{#2}%
+  \settowidth{\Youngy}{#2}\ifnum\Youngy<\Youngx\makebox[\Youngx]{}\else\makebox[\Youngy]{}\fi%
 }%
 \fi}
 %
@@ -120,7 +120,7 @@
   \repeat%
 }
 \def\youngtype(#1){\futurelet\next\makeyoungtype,#1,\stopmakeyoungtype,\endmakeyoungtype}%
-\def\makeyoungtype#1,#2,#3\endmakeyoungtype{\def\nothing{}%
+\def\makeyoungtype#1,#2,#3\endmakeyoungtype{%\def\nothing{}%
   \ifx\stopmakeyoungtype#2%
     {#1}%
   \else
@@ -140,19 +140,19 @@
 \newdimen{\Younghhook}
 \setlength{\Younghhook}{8\Youngvline}
 %
-\def\hook[#1]{{}\raisebox{-0.25\Youngheight}{\setlength{\w}{0.5\Youngheight}\addtolength{\w}{-0.5\Younghhook}%%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\w]{\Youngvhook}{\Younghhook}}}%
+\def\hook[#1]{{}\raisebox{-0.25\Youngheight}{\setlength{\Youngw}{0.5\Youngheight}\addtolength{\Youngw}{-0.5\Younghhook}%%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\Youngw]{\Youngvhook}{\Younghhook}}}%
   \expandafter\mhook#1\endofmakeinghook}}%
 \def\mhook#1{\ifx#1\endofmakeinghook\relax\else\makehook{#1}\expandafter\mhook\fi}%
 \def\makehook#1{%
-\setlength{\w}{0.5\Youngheight}\addtolength{\w}{-0.5\Younghhook}%
+\setlength{\Youngw}{0.5\Youngheight}\addtolength{\Youngw}{-0.5\Younghhook}%
   \def\lefthook{l}\def\righthook{r}\def\uphook{u}\def\downhook{d}\def\centerhook{c}%
 \if\centerhook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\w]{\Youngvhook}{\Younghhook}}}%
+  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\Youngw]{\Youngvhook}{\Younghhook}}}%
 \else\if\lefthook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][l]{\rule[\w]{0.5\Youngwidth}{\Younghhook}}}%%
+  \makebox[0pc][c]{\makebox[\Youngwidth][l]{\rule[\Youngw]{0.5\Youngwidth}{\Younghhook}}}%%
 \else\if\righthook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][r]{\rule[\w]{0.5\Youngwidth}{\Younghhook}}}%%%
+  \makebox[0pc][c]{\makebox[\Youngwidth][r]{\rule[\Youngw]{0.5\Youngwidth}{\Younghhook}}}%%%
 \else\if\uphook#1%
   \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[0.5\Youngheight]{\Youngvhook}{0.5\Youngheight}}}%%%
 \else\if\downhook#1%
