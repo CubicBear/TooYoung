@@ -1,167 +1,442 @@
-  %% Copyright 2020 Xiong Rui
-  %
-  % This work may be distributed and/or modified under the
-  % conditions of the LaTeX Project Public License, either version 1.3
-  % of this license or (at your option) any later version.
-  % The latest version of this license is in
-  %   http://www.latex-project.org/lppl.txt
-  % and version 1.3 or later is part of all distributions of LaTeX
-  % version 2005/12/01 or later.
-  %
-  % This work has the LPPL maintenance status “maintained”.
-  %
-  % The Current Maintainer of this work is M. Y. Name.
-  %
-  % This work consists of the files pig.dtx and pig.ins
-  % and the derived file pig.sty.
-%
-%General setting
-\newdimen\Youngwidth%-----------------------------------------------------The width of each rectangle.
-\setlength\Youngwidth{1pc}
-\newdimen\Youngheight%------------------------------------------------------The height of each rectangle.
-\setlength\Youngheight{\Youngwidth}
-\newdimen\Youngvline%----------------------------------------------------The thickness of lines.
-\setlength\Youngvline{0.2pt}
-\newdimen\Younghline%----------------------------------------------------The thickness of lines.
-\setlength\Younghline{\Youngvline}
-\def\Fontinbox#1{#1}%----------------------------------------------------the font in the box
-\newif\ifFrenchstyle\Frenchstylefalse%-----------------------------------Whether french style
-\newdimen\Youngx\newdimen\Youngy\newdimen\Youngz\newdimen\Youngw%
-%
-%The basic Young box
-\def\Youngbox#1{\rule{0pc}{\Youngheight}%
-\setlength{\Youngx}{\Youngheight}\addtolength{\Youngx}{\Younghline}%
-\setlength{\Youngy}{\Youngwidth}\addtolength{\Youngy}{\Youngvline}%%
-\setlength{\Youngz}{\Youngheight}\addtolength{\Youngz}{-0.5\Younghline}%
-\makebox[\Youngwidth][c]{%-----------------------------------------------------------------------This is set to make no problem of position
-  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\Youngx}}%------------------This is the left line
-  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[\Youngz]{\Youngy}{\Younghline}}%-------------------------------The upper side
-  \makebox[0pc][l]{\hspace{-0.5\Youngvline}\rule[-0.5\Younghline]{\Youngy}{\Younghline}}%-----------------------------The lower side
-  \makebox[\Youngwidth][c]{#1}%----------------------------------------------------------This is to be filled
-  \makebox[0pc][c]{\rule[-0.5\Younghline]{\Youngvline}{\Youngx}}%------------------------This is the right line
-}}
-%
-%MultifunctionalYoungbox
-\def\Ybox#1{%
-  \def\Youngxword{#1}%
-  \expandafter\YboxAux#1[\middleYbox]\endYbox%
+% The packege TooYoung
+% Version 2
+
+\makeatletter
+
+% SetUps
+\newdimen\Youngwidth%
+    \setlength{\Youngwidth}{1.2pc}%
+\newdimen\Youngheight%
+    \setlength{\Youngheight}{1.2pc}%
+\newdimen\YoungHthickness%
+    \setlength{\YoungHthickness}{0.4pt}%
+\newdimen\YoungVthickness%
+    \setlength{\YoungVthickness}{0.4pt}%
+\newdimen\Youngdepth%
+    \setlength{\Youngdepth}{0.3pc}%
+\newdimen\hookHthickness%
+    \setlength{\hookHthickness}{0.2pc}%
+\newdimen\hookVthickness%
+    \setlength{\hookVthickness}{0.2pc}%
+\newdimen\Youngdimen% for usage
+\newdimen\Youngdimenp% for usage
+\newif\ifTooYoung% for usage
+
+\def\Youngstyle#1{{#1}}% The style in boxes  
+
+\def\do@ifequal#1#2#3#4{\def\check@A{#1}\def\check@B{#2}%
+    \ifx\check@B\check@A%
+        #3%
+    \else%
+        #4%
+    \fi}
+
+\def\do@IFequal#1#2#3#4#5{% #5=computed
+    \csname if#5\endcsname%
+        \relax
+    \else
+        \def\check@A{#1}\def\check@B{#2}%
+        \ifx\check@B\check@A%
+            \csname #5true\endcsname
+            #3%
+        \else%
+            #4%
+        \fi%
+    \fi}
+
+% Framing 
+% ┌─┐
+% │ │
+% └─┘
+\def\Young@frame@left{%% left | left justified
+    \hspace{-0.5\YoungVthickness}%
+        \rule[-\Youngdepth]{\YoungVthickness}{\Youngheight}%
+    \hspace{-0.5\YoungVthickness}%
 }%
-\def\YboxAux#1[#2]#3\endYbox{\def\yword{#1}\def\nothing{}\def\aspace{ }%
-\ifx\middleYbox#2%
-  \expandafter\Yboxwords\Youngxword\endofYbox%
-\else\ifx\nothing\yword%
-  \expandafter\Yboxeffect\Youngxword\endofYbox%
-\else\ifx\aspace\yword%
-  \expandafter\Yboxeffect\Youngxword\endofYbox%
-\else%
-  \expandafter\Yboxwords\Youngxword\endofYbox%
-\fi\fi\fi%
-}
-\def\Yboxwords#1\endofYbox{\Youngbox{\raisebox{0.25\Youngheight}{$\Fontinbox{#1}$}}}
-\def\Yboxeffect#1[#2]#3\endofYbox{%
-  \makebox[0pc][l]{\makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}\raisebox{0.25\Youngheight}{$\Fontinbox{#2}$}}}%%
-\makebox[\Youngwidth][c]{\rule{0pc}{\Youngheight}#3}%
-}
-%
-%combine two rows
-\def\addnewrowto#1#2{%
-\ifFrenchstyle\mbox{%---------------------------------------------This is set to make no problem of position
-  \settoheight{\Youngx}{#1}\addtolength{\Youngx}{-0.5\Younghline}\raisebox{\Youngx}{#2}%
-  \settowidth{\Youngx}{#2}\hspace{-\Youngx}\makebox[0pc][l]{#1}%
-  \settowidth{\Youngy}{#1}\ifnum\Youngy<\Youngx\makebox[\Youngx]{}\else\makebox[\Youngy]{}\fi%
+\def\Young@frame@lower{%% lower -- left justified
+    \hspace{-0.5\YoungVthickness}%
+    \setlength{\Youngdimen}{-\Youngdepth}%
+    \addtolength{\Youngdimen}{-0.5\YoungHthickness}%
+    \rule[\Youngdimen]{0.5\YoungVthickness}{\YoungHthickness}%
+    \rule[\Youngdimen]{\Youngwidth}{\YoungHthickness}%
+    \rule[\Youngdimen]{0.5\YoungVthickness}{\YoungHthickness}%
+    \hspace{-\Youngwidth}\hspace{-0.5\YoungVthickness}%
 }%
-\else\mbox{%---------------------------------------------This is set to make no problem of position
-  \settoheight{\Youngx}{#2}\addtolength{\Youngx}{-0.5\Younghline}\raisebox{\Youngx}{#1}%
-  \settowidth{\Youngx}{#1}\hspace{-\Youngx}\makebox[0pc][l]{#2}%
-  \settowidth{\Youngy}{#2}\ifnum\Youngy<\Youngx\makebox[\Youngx]{}\else\makebox[\Youngy]{}\fi%
+\def\Young@frame@upper{% upper -- left justified
+    \hspace{-0.5\YoungVthickness}%
+    \setlength{\Youngdimen}{-\Youngdepth}%
+    \addtolength{\Youngdimen}{-0.5\YoungHthickness}%
+    \addtolength{\Youngdimen}{\Youngheight}%
+    \rule[\Youngdimen]{0.5\YoungVthickness}{\YoungHthickness}%
+    \rule[\Youngdimen]{\Youngwidth}{\YoungHthickness}%
+    \rule[\Youngdimen]{0.5\YoungVthickness}{\YoungHthickness}%
+    \hspace{-\Youngwidth}\hspace{-0.5\YoungVthickness}%
 }%
-\fi}
-%
-\def\makeYoungrow#1{%
-\futurelet\next\makeYoungrowAux&#1&\stopmakeYoungrow&\endmakeYoungrow}%------We add the recognization commond at the end.
-\def\makeYoungrowAux#1&#2&#3\endmakeYoungrow{%-------------------------------------#1 The term read, #2 The reading term, #3the term to read
-  \ifx\stopmakeYoungrow#2%--------------------------------------------------------------------If nothing is reading
-    {#1}%---------------------------------------------------------------------------------------print the done one
-  \else%
-    \expandafter\makeYoungrowAux{#1\Ybox{#2}}&#3\endmakeYoungrow%----------------------------iterate
-  \fi%
-}
-%
-%
-\def\makeYoungcolumn#1{\futurelet\next\makeYoungcolumnAux\\#1\\\stopmakeYoungcolumn\\\endmakeYoungcolumn}%
-\def\makeYoungcolumnAux#1\\#2\\#3\endmakeYoungcolumn{%
-  \ifx\stopmakeYoungcolumn#2%
-    {#1}%
-  \else%
-    \expandafter\makeYoungcolumnAux {\addnewrowto{#1}{\makeYoungrow{#2}}}\\#3\endmakeYoungcolumn%
-  \fi%
-}
-%
-\def\young#1{\def\hole{{}\raisebox{-0.25\Youngheight}{\rule{\Youngwidth}{\Youngheight}}}%
-\def\shadow{{}\raisebox{-0.25\Youngheight}{%
-  \makebox[\Youngwidth][l]{%
-  \makebox[0pc][l]{\rule[0.2\Youngheight]{\Youngwidth}{\Younghline}}\makebox[0pc][l]{\rule[0.4\Youngheight]{\Youngwidth}{\Younghline}}%
-  \makebox[0pc][l]{\rule[0.6\Youngheight]{\Youngwidth}{\Younghline}}\makebox[0pc][l]{\rule[0.8\Youngheight]{\Youngwidth}{\Younghline}}%
-  \mbox{}\hfill\rule{\Youngvline}{\Youngheight}\hfill\rule{\Youngvline}{\Youngheight}%
-  \hfill\rule{\Youngvline}{\Youngheight}\hfill\rule{\Youngvline}{\Youngheight}\hfill}%%
+\def\Young@frame@right{%% right | left justified
+    \hspace{\Youngwidth}%
+        \hspace{-0.5\YoungVthickness}%
+            \rule[-\Youngdepth]{\YoungVthickness}{\Youngheight}%
+        \hspace{-0.5\YoungVthickness}%
+    \hspace{-\Youngwidth}%
+}%
+\def\Young@frame#1{\expandafter\Young@frame@reading#1{}\endreading}%
+\def\Young@frame@reading#1{%
+    \do@ifequal{#1}{\endreading}{%
+        \relax%
+    }{%
+        {\TooYoungfalse%
+    \do@IFequal{#1}{l}{\Young@frame@left}{\relax}{TooYoung}%
+    \do@IFequal{#1}{r}{\Young@frame@right}{\relax}{TooYoung}%
+    \do@IFequal{#1}{u}{\Young@frame@upper}{\relax}{TooYoung}%
+    \do@IFequal{#1}{^}{\Young@frame@upper}{\relax}{TooYoung}%
+    \do@IFequal{#1}{d}{\Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{_}{\Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╬}{\relax}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╦}{\Young@frame@upper}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╩}{\Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╠}{\Young@frame@left}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╣}{\Young@frame@right}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╔}{\Young@frame@upper%
+                        \Young@frame@left}{\relax}{TooYoung}%
+        \do@IFequal{#1}{F}{\Young@frame@upper%
+                        \Young@frame@left}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╗}{\Young@frame@upper%
+                        \Young@frame@right}{\relax}{TooYoung}%
+        \do@IFequal{#1}{7}{\Young@frame@upper%
+                        \Young@frame@right}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╚}{\Young@frame@lower%
+                        \Young@frame@left}{\relax}{TooYoung}%
+        \do@IFequal{#1}{L}{\Young@frame@lower%
+                        \Young@frame@left}{\relax}{TooYoung}%
+    \do@IFequal{#1}{╝}{\Young@frame@lower%
+                        \Young@frame@right}{\relax}{TooYoung}%
+        \do@IFequal{#1}{J}{\Young@frame@lower%
+                        \Young@frame@right}{\relax}{TooYoung}%
+    \do@IFequal{#1}{═}{\Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+        \do@IFequal{#1}{=}{\Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+        \do@IFequal{#1}{I}{\Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{║}{\Young@frame@left%
+                        \Young@frame@right}{\relax}{TooYoung}%
+        \do@IFequal{#1}{/}{\Young@frame@left%
+                        \Young@frame@right}{\relax}{TooYoung}%
+        \do@IFequal{#1}{H}{\Young@frame@left%
+                        \Young@frame@right}{\relax}{TooYoung}%
+    \do@IFequal{#1}{V}{\Young@frame@left%
+                        \Young@frame@right%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{U}{\Young@frame@left%
+                        \Young@frame@right%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{>}{\Young@frame@right%
+                        \Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{<}{\Young@frame@left%
+                        \Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+        \do@IFequal{#1}{C}{\Young@frame@left%
+                        \Young@frame@upper%
+                        \Young@frame@lower}{\relax}{TooYoung}%
+    \do@IFequal{#1}{A}{\Young@frame@left%
+                        \Young@frame@right%
+                        \Young@frame@upper}{\relax}{TooYoung}%
+    \do@IFequal{#1}{O}{\Young@frame@left%
+                        \Young@frame@right%
+                        \Young@frame@lower%
+                        \Young@frame@upper}{\relax}{TooYoung}%
+        }%
+        \expandafter\Young@frame@reading%
+    }%
+}%
+\def\Young@frame@Sugar#1{%
+    \def\framename{#1}%
+    \do@ifequal{#1}{}{\def\framename{udlr}}{\relax}%
+    \do@ifequal{#1}{0}{\def\framename{}}{\relax}%
+    \Young@frame{\framename}%
+    }
+
+% Inbox 
+% ---
+%  ? 
+% ---
+
+\def\Young@hook#1{%
+    \hspace{-0.5\hookVthickness}%
+        \setlength{\Youngdimen}{-\Youngdepth}%
+        \addtolength{\Youngdimen}{0.5\Youngheight}%
+        \addtolength{\Youngdimen}{-0.5\hookHthickness}%
+        \rule[\Youngdimen]{\hookVthickness}{\hookHthickness}%
+    \hspace{-0.5\hookVthickness}%
+    \expandafter\Young@hook@reading#1{}\endreading}%
+\def\Young@hook@reading#1{%
+    \do@ifequal{#1}{\endreading}{%
+        \relax%
+    }{%
+        \do@ifequal{#1}{u}{%
+            \hspace{-0.5\hookVthickness}%
+            \setlength{\Youngdimen}{-\Youngdepth}%
+            \addtolength{\Youngdimen}{0.5\Youngheight}%
+            \rule[\Youngdimen]{\hookVthickness}{0.5\Youngheight}%
+            \hspace{-0.5\hookVthickness}%
+        }{\relax}%
+        \do@ifequal{#1}{d}{%
+            \hspace{-0.5\hookVthickness}%
+            \setlength{\Youngdimen}{-\Youngdepth}%
+            \rule[\Youngdimen]{\hookVthickness}{0.5\Youngheight}%
+            \hspace{-0.5\hookVthickness}%
+        }{\relax}%
+        \do@ifequal{#1}{l}{%
+            \hspace{-0.5\Youngwidth}%
+            \setlength{\Youngdimen}{-\Youngdepth}%
+            \addtolength{\Youngdimen}{0.5\Youngheight}%
+            \addtolength{\Youngdimen}{-0.5\hookHthickness}%
+            \rule[\Youngdimen]{0.5\Youngwidth}{\hookHthickness}%
+        }{\relax}%
+        \do@ifequal{#1}{r}{%
+            \setlength{\Youngdimen}{-\Youngdepth}%
+            \addtolength{\Youngdimen}{0.5\Youngheight}%
+            \addtolength{\Youngdimen}{-0.5\hookHthickness}%
+            \rule[\Youngdimen]{0.5\Youngwidth}{\hookHthickness}%
+            \hspace{-0.5\Youngwidth}%
+        }{\relax}%
+        \expandafter\Young@hook@reading%
 }}%
-\makeYoungcolumn{#1}%
+
+\def\Young@hook@Sugar#1{%
+    \edef\hookname{#1}%
+    %┌┬┐┌─┐
+    %├┼┤│┼│
+    %└┴┘└─┘
+    \do@ifequal{#1}{┌}{\def\hookname{dr}}{\relax}%
+        \do@ifequal{#1}{F}{\def\hookname{dr}}{\relax}%
+    \do@ifequal{#1}{┐}{\def\hookname{dl}}{\relax}%}%
+        \do@ifequal{#1}{7}{\def\hookname{dl}}{\relax}%
+    \do@ifequal{#1}{└}{\def\hookname{ur}}{\relax}%
+        \do@ifequal{#1}{L}{\def\hookname{ur}}{\relax}%
+    \do@ifequal{#1}{┘}{\def\hookname{ul}}{\relax}%
+        \do@ifequal{#1}{J}{\def\hookname{ul}}{\relax}%
+    \do@ifequal{#1}{─}{\def\hookname{lr}}{\relax}%
+        \do@ifequal{#1}{--}{\def\hookname{lr}}{\relax}%
+        \do@ifequal{#1}{-}{\def\hookname{lr}}{\relax}%
+    \do@ifequal{#1}{- }{\def\hookname{l}}{\relax}%
+    \do@ifequal{#1}{ -}{\def\hookname{r}}{\relax}%
+    \do@ifequal{#1}{^}{\def\hookname{u}}{\relax}%
+    \do@ifequal{#1}{_}{\def\hookname{d}}{\relax}%
+    \do@ifequal{#1}{│}{\def\hookname{ud}}{\relax}%
+        \do@ifequal{#1}{/}{\def\hookname{ud}}{\relax}%
+        \do@ifequal{#1}{|}{\def\hookname{ud}}{\relax}%
+    \do@ifequal{#1}{┬}{\def\hookname{dlr}}{\relax}%
+        \do@ifequal{#1}{s}{\def\hookname{dlr}}{\relax}%
+        \do@ifequal{#1}{T}{\def\hookname{dlr}}{\relax}%
+    \do@ifequal{#1}{┴}{\def\hookname{ulr}}{\relax}%
+        \do@ifequal{#1}{n}{\def\hookname{ulr}}{\relax}%
+    \do@ifequal{#1}{┤}{\def\hookname{udl}}{\relax}%
+        \do@ifequal{#1}{w}{\def\hookname{udl}}{\relax}%
+    \do@ifequal{#1}{├}{\def\hookname{udr}}{\relax}%
+        \do@ifequal{#1}{e}{\def\hookname{udr}}{\relax}%
+    \do@ifequal{#1}{┼}{\def\hookname{udlr}}{\relax}%
+        \do@ifequal{#1}{+}{\def\hookname{udlr}}{\relax}%
+    \Young@hook{\hookname}%
 }
-\def\fyoung#1{{\Frenchstyletrue\young{#1}}}
-\def\Young#1{\begin{array}{c}\!\!{\young{#1}}\!\!\end{array}}
-\def\FYoung#1{\begin{array}{c}\!\!{\fyoung{#1}}\!\!\end{array}}
-%
-%Type, firstly define repeat
-\newcount\n
-\def\repeatet#1{%
-  \n=0%
-  \loop\ifnum\n<#1 %
-  \Youngbox{}\advance\n by 1%
-  \repeat%
+\def\Young@inbox#1{%
+    \def\hook##1{\Young@hook@Sugar{##1}}%
+    {\makebox[\Youngwidth][c]{\(\Youngstyle{#1}\)}}%
+}%
+
+% Box 
+% ┌─┐
+% │?│
+% └─┘
+\def\Young@Box#1#2#3{%
+%    \setlength{\Youngdimen}{\Youngheight}%
+%    \addtolength{\Youngdimen}{-\Youngdepth}%
+    \raisebox{0\Youngdepth}[0pc][0pc]{%
+    \makebox[0pc][l]{\makebox[\Youngwidth][c]{%%
+        \(#1{%
+        \raisebox{0pc}{\mbox{\Young@frame@Sugar{#2}}}%
+        \expandafter\Young@inbox{#3}}\)%
+    }}}%
+    \phantom{\rule[-\Youngdepth]{\Youngwidth}{\Youngheight}}%
+}%
+\def\Young@readingBox#1{%
+    \expandafter\Young@readingBox@color#1*(\No){}*(\No){}\endreading%
+}%
+\def\Young@readingBox@color#1*(#2)#3*(\No)#4\endreading{%
+    \do@ifequal{#2}{\No}{%
+        \expandafter\Young@readingBox@frame#1|\No|\No|\No|{}\endreading%
+    }{%
+        \makebox[0pc][l]{%
+            \color{#2}{\makebox[0pc][l]{\rule[-\Youngdepth]{\Youngwidth}{\Youngheight}}}}%
+        \expandafter\Young@readingBox@frame#1#3|\No|\No|\No|{}\endreading%
+    }}%
+\def\Young@readingBox@frame#1|#2|#3|\No|#4\endreading{%
+    \do@ifequal{#2}{\No}{%
+        \expandafter\Young@readingBox@noframe#1[\No]{}[\No]{}\endreading%
+    }{%
+        \do@ifequal{#3}{\No}{%
+            \Young@Box{}{#1}{#2}%
+        }{%
+            \Young@Box{#1}{#2}{#3}%
+        }%
+    }%
+}%
+\def\Young@readingBox@noframe#1[#2]#3[\No]#4\endreading{%
+    \do@ifequal{#2}{\No}{%
+        \Young@Box{}{udlr}{#1}%
+    }{%
+        \Young@Box{#1}{0}{#2#3}%
+    }}%
+
+
+% Row
+% ┌─┬─┬─┐
+% │?│?│?|
+% └─┴─┴─┘
+
+\def\Young@reading@row#1{%
+    \expandafter\Young@read@row&{}#1&\No&{}\endreading}%
+\def\Young@read@row&#1&#2\endreading{%
+    \do@ifequal{#1}{{}\No}{%
+        \relax%
+    }{%
+        \Young@readingBox{#1}\expandafter\Young@read@row&{}#2\endreading%
+    }%
 }
-\def\youngtype(#1){\futurelet\next\makeyoungtype,#1,\stopmakeyoungtype,\endmakeyoungtype}%
-\def\makeyoungtype#1,#2,#3\endmakeyoungtype{%\def\nothing{}%
-  \ifx\stopmakeyoungtype#2%
-    {#1}%
-  \else
-    \expandafter\makeyoungtype {\addnewrowto{#1}{\repeatet{#2}}},#3\endmakeyoungtype%
-  \fi
+
+% Tableaux
+% ┌─┬─┬─┐
+% │?│?│?|
+% ├─┼─┴─┘
+% │?│
+% └─┘
+
+% \def\Young@stackover#1#2{%
+% \do@ifequal{#1}{}{#2}{%
+%     \settoheight{\Youngdimenp}{#2}%
+%     \settodepth{\Youngdimen}{#1}%
+%     \addtolength{\Youngdimen}{\Youngdimenp}%
+% %    \settoheight{\Youngdimen}{\Youngheight}%
+%     \raisebox{-\Youngdimen}{\makebox[0pc][l]{#2}}%
+%     \makebox[0pc][l]{#1}%
+%     \settowidth{\Youngdimen}{#1}%
+%     \settowidth{\Youngdimenp}{#2}%
+%     \ifdim\Youngdimen>\Youngdimenp%
+%         \hspace{\Youngdimen}%
+%     \else%
+%         \hspace{\Youngdimenp}%
+%     \fi%
+% }}%
+
+\def\Young@stackover#1#2{%
+\do@ifequal{#1}{}{#2}{%
+    \settoheight{\Youngdimen}{#2}%
+    \settodepth{\Youngdimenp}{#2}%
+    \addtolength{\Youngdimen}{\Youngdimenp}%
+    \raisebox{\Youngdimen}{\makebox[0pc][l]{#1}}%
+    \makebox[0pc][l]{#2}%
+    \settowidth{\Youngdimen}{#1}%
+    \settowidth{\Youngdimenp}{#2}%
+    \ifdim\Youngdimen>\Youngdimenp%
+        \hspace{\Youngdimen}%
+    \else%
+        \hspace{\Youngdimenp}%
+    \fi%
+}}%
+
+
+\def\Young@reading@column#1{%
+    \expandafter\Young@read@column{}\reading{}#1\\\No\endreading%
 }%
-\def\yng(#1){\begin{array}{c}{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
-\def\Yng(#1){\begin{array}{c}\youngtype(#1)\end{array}}
-\def\fyng(#1){\begin{array}{c}\Frenchstyletrue{\setlength{\Youngwidth}{0.5pc}\setlength{\Youngheight}{0.5pc}\youngtype(#1)}\end{array}}
-\def\FYng(#1){\begin{array}{c}\Frenchstyletrue\youngtype(#1)\end{array}}
-%
-%
-%
-%hooks
-\newdimen{\Youngvhook}
-\setlength{\Youngvhook}{8\Youngvline}
-\newdimen{\Younghhook}
-\setlength{\Younghhook}{8\Youngvline}
-%
-\def\hook[#1]{{}\raisebox{-0.25\Youngheight}{\setlength{\Youngw}{0.5\Youngheight}\addtolength{\Youngw}{-0.5\Younghhook}%%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\Youngw]{\Youngvhook}{\Younghhook}}}%
-  \expandafter\mhook#1\endofmakeinghook}}%
-\def\mhook#1{\ifx#1\endofmakeinghook\relax\else\makehook{#1}\expandafter\mhook\fi}%
-\def\makehook#1{%
-\setlength{\Youngw}{0.5\Youngheight}\addtolength{\Youngw}{-0.5\Younghhook}%
-  \def\lefthook{l}\def\righthook{r}\def\uphook{u}\def\downhook{d}\def\centerhook{c}%
-\if\centerhook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[\Youngw]{\Youngvhook}{\Younghhook}}}%
-\else\if\lefthook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][l]{\rule[\Youngw]{0.5\Youngwidth}{\Younghhook}}}%%
-\else\if\righthook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][r]{\rule[\Youngw]{0.5\Youngwidth}{\Younghhook}}}%%%
-\else\if\uphook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule[0.5\Youngheight]{\Youngvhook}{0.5\Youngheight}}}%%%
-\else\if\downhook#1%
-  \makebox[0pc][c]{\makebox[\Youngwidth][c]{\rule{\Youngvhook}{0.5\Youngheight}}}%%%
-\else\relax%
-\fi\fi\fi\fi\fi%
+\def\Young@read@column#1\reading#2\\#3\endreading{%
+    \do@ifequal{#3}{\No}{%
+        \Young@stackover{#1}{\Young@reading@row{#2}}%
+    }{%
+        \expandafter\Young@read@column{{\Young@stackover{#1}{\Young@reading@row{#2}}}}\reading{}#3\endreading%
+    }%
 }%
-%
-%
-%
-%
-%
+
+\def\TooYoung#1{%
+    \def\black{\rule[-\Youngdepth]{\Youngwidth}{\Youngheight}}%
+    \let\wall\Young@frame@Sugar%
+    \Young@reading@column{#1}%
+}%
+\def\Young#1{%
+    \do@ifequal{#1}{[}{%
+        \expandafter\Youngfoo% 
+    }{%
+        \ifmmode%
+            \mathrel{\begin{array}{@{\,}c@{\,}}%
+                {\TooYoung{#1}}%
+            \end{array}}%
+        \else%
+            {\TooYoung{#1}}%
+        \fi%
+    }%
+}%
+\def\Youngfoo#1]#2{%
+    \ifmmode%
+        \mathrel{\begin{array}{@{\,}c@{\,}}
+            {\setYsize{#1}\TooYoung{#2}}%
+        \end{array} }%
+    \else%
+            {\setYsize{#1}\TooYoung{#2}}%
+    \fi%
+}%
+
+\def\tooyoung#1{{%
+    \setYstyle{\scriptscriptstyle}%
+    \setYsize{0.6pc}%
+    \sethookth{0.1pc}
+    \TooYoung{#1}%
+}}
+\def\young#1{%
+    {\setYstyle{\scriptscriptstyle}%
+    \setYsize{0.6pc}%
+    \sethookth{0.1pc}%
+    \Young{#1}}%
+}%
+\def\YOUNG#1{%
+    {\setYstyle{\displaystyle}%
+    \setYsize{2.4pc}%
+    \sethookth{0.3pc}%
+    \Young{#1}}%
+}%
+
+\def\setYwidth#1{\setlength{\Youngwidth}{#1}}%
+\def\setYheight#1{%
+    \setlength{\Youngheight}{#1}%
+    \setlength{\Youngdimen}{#1}%
+    \setlength{\Youngdepth}{0.25\Youngdimen}}%
+\def\setYsize#1{%
+    \setYwidth{#1}\setYheight{#1}}%
+\def\setYhth#1{\setlength{\YoungHthickness}{#1}}%
+\def\setYvth#1{\setlength{\YoungVthickness}{#1}}%
+\def\setYth#1{\setYhth{#1}\setYvth{#1}}%
+\def\sethookth#1{%
+    \setlength{\hookHthickness}{#1}%
+    \setlength{\hookVthickness}{#1}}%
+\def\Ybigger{%
+    \setlength{\Youngheight}{2\Youngheight}%
+    \setlength{\Youngwidth}{2\Youngwidth}%
+    \setlength{\Youngdepth}{2\Youngdepth}}%
+    \setlength{\hookHthickness}{2\hookHthickness}%
+    \setlength{\hookVthickness}{2\hookVthickness}%
+\def\Ysmaller{%
+    \setlength{\Youngheight}{0.5\Youngheight}%
+    \setlength{\Youngwidth}{0.5\Youngwidth}%
+    \setlength{\Youngdepth}{0.5\Youngdepth}}%
+    \setlength{\hookHthickness}{0.5\hookHthickness}%
+    \setlength{\hookVthickness}{0.5\hookVthickness}%
+\def\Ythicker{%
+    \setlength{\YoungHthickness}{4\YoungHthickness}%
+    \setlength{\YoungVthickness}{4\YoungVthickness}}%
+\def\Ythinner{%
+    \setlength{\YoungHthickness}{0.25\YoungHthickness}%
+    \setlength{\YoungVthickness}{0.25\YoungHthickness}}%
+\def\setYstyle#1{\def\Youngstyle{#1}}%
+
+
+
+\makeatother
